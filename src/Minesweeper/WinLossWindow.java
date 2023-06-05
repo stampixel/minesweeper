@@ -1,4 +1,4 @@
 package Minesweeper;
 
-public class WinLossWindow extends Window{
+public class WinLossWindow extends Window {
 }
