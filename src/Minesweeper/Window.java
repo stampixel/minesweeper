@@ -1,4 +1,4 @@
 package Minesweeper;
 
-public class Window {
+public abstract class Window {
 }
