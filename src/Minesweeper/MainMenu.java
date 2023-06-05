@@ -1,4 +1,4 @@
 package Minesweeper;
 
-public class MainMenu {
+public class MainMenu extends Window {
 }

@@ -1,4 +1,4 @@
 package Minesweeper;
 
-public class AdvancedBoard {
+public class AdvancedBoard extends BoardWindow{
 }
