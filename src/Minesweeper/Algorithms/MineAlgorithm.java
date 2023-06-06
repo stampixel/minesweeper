@@ -4,7 +4,7 @@ public class MineAlgorithm {
 
     public static void main(String[] args) {
         int[][] board = generateBoard(9, 9);
-        generateMine(board, 5, 0, 0);
+        generateMine(board, 30, 2, 2);
 
         for (int i = 0; i < board.length; i++) {
             for (int j = 0; j < board[0].length; j++) {
@@ -34,25 +34,24 @@ public class MineAlgorithm {
     }
 
     /**
-     *
      * @param board
      * @param mineNum
      * @param clickRow The row which represents the user's first click
      * @param clickCol The col which represents the user's first click
-     * @return
      */
-    public static int[][] generateMine(int[][] board, int mineNum, int clickRow, int clickCol) {
+    public static void generateMine(int[][] board, int mineNum, int clickRow, int clickCol) {
         // Min + (int)(Math.random() * ((Max - Min) + 1))
         int row, col;
-        int mineCount = 0;
+        int mineCount = 1; // Start at one since the first mine in mineLocation represent the first square clicked
         row = board.length;
         col = board[0].length;
 
         int[][] mineLocations = new int[mineNum + 1][2]; // Example with 2 mines: {{ROW, COL}, {ROW, COL}}
         mineLocations[0][0] = clickRow;
         mineLocations[0][1] = clickCol;
+        System.out.println(mineLocations[0][0] + " " + mineLocations[0][1]);
 
-        while (mineCount != mineNum) {
+        while (mineCount != mineNum + 1) { // +1 since we added 1 to mineCount
             int mineRow, mineCol;
             boolean mineExist;
 
@@ -74,16 +73,16 @@ public class MineAlgorithm {
             mineLocations[mineCount][0] = mineRow;
             mineLocations[mineCount][1] = mineCol;
 
-            mineCount ++;
+            mineCount++;
         }
 
         placeMines(board, mineLocations);
 
-        return board;
     }
 
     /**
-     * Bug here, fix later
+     * Places the mines on the board
+     *
      * @param board
      * @param mineLocations
      */
