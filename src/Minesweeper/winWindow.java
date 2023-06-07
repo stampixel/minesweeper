@@ -1,6 +1,8 @@
 package Minesweeper;
 
-
+/**
+ * @author Andrew
+ */
 
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -25,33 +27,26 @@ import java.util.Scanner;
 
 public class winWindow extends Window implements ActionListener {
 
+    static String username = "";
     //create variables to be accessed from class regardless of method
     JButton button;
     JTextField textField;
-    static String username = "";
-
-    public static void main(String[] args) throws Exception{
-
-        new winWindow();
-
-    }
 
     /**
-     *  Constructor
-     *  Create a new window, and display win or lose text.
-     *  Will also allow user to input username
-     *  save username onto file
-     *  Display leaderboard onto window
+     * Constructor
+     * Create a new window, and display win or lose text.
+     * Will also allow user to input username
+     * save username onto file
+     * Display leaderboard onto window
+     *
      * @throws Exception
      */
 
-    winWindow() throws Exception{
+    winWindow() throws Exception {
+        super();
 
         //create the window
-        JFrame frame = new JFrame();
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(500, 500);
-        frame.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10));
+        this.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10));
 
         //create a label to display onto window
         JLabel winText = new JLabel();
@@ -62,7 +57,7 @@ public class winWindow extends Window implements ActionListener {
 
         //set text field specifics
         textField = new JTextField();
-        textField.setPreferredSize(new Dimension(250,40));
+        textField.setPreferredSize(new Dimension(250, 40));
         textField.setFont(new Font("consolas", Font.PLAIN, 20));
         textField.setText("Please enter Username");
 
@@ -73,7 +68,7 @@ public class winWindow extends Window implements ActionListener {
         scoreboard.setEditable(false);
 
         // Read contents of the leaderboard file
-        File file = new File("leaderBoard.txt");
+        File file = new File("leaderboard.txt");
         try (Scanner input = new Scanner(file)) {
             List<String> scores = new ArrayList<>();
             while (input.hasNextLine()) {
@@ -94,25 +89,32 @@ public class winWindow extends Window implements ActionListener {
 
         //button to read user input
         button = new JButton("Submit");
-        button.addActionListener((ActionListener) this);
+        button.addActionListener(this);
 
         //make frame visible, and add other GUI components
-        frame.setVisible(true);
-        frame.add(winText);
-        frame.add(textField);
-        frame.add(button);
-        frame.add(scoreboard);
+        this.add(winText);
+        this.add(textField);
+        this.add(button);
+        this.add(scoreboard);
 
+        this.pack();
+        this.setVisible(true);
+    }
+
+    public static void main(String[] args) throws Exception {
+
+        new winWindow();
 
     }
+
     public void actionPerformed(ActionEvent e) {
 
         //append to file, and get username and display to window
         //store username into a file
         try {
-            PrintWriter output = new PrintWriter(new FileWriter("leaderBoard.txt", true));
+            PrintWriter output = new PrintWriter(new FileWriter("leaderboard.txt", true));
             username = textField.getText();
-            output.println(username  + "difficuluty " + "time");
+            output.println(username + "difficuluty " + "time");
             output.close();
 
             button.setEnabled(false);
@@ -124,5 +126,4 @@ public class winWindow extends Window implements ActionListener {
         textField.setEditable(false);
 
     }
-
 }

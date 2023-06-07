@@ -7,6 +7,5 @@ public abstract class Window extends JFrame {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setResizable(false);
         this.setSize(1280, 720);
-        this.setVisible(true);
     }
 }

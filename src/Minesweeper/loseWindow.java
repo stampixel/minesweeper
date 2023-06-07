@@ -17,21 +17,10 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextArea;
 
-public class loseWindow extends Window  {
+public class loseWindow extends Window {
 
-    public static void main(String[] args) throws Exception {
-
-        new loseWindow ();
-
-    }
-
-    loseWindow () throws Exception{
-
-        //create the window
-        JFrame frame = new JFrame();
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(500, 500);
-        frame.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10));
+    loseWindow() throws Exception {
+        this.setLayout(new FlowLayout(FlowLayout.CENTER));
 
 
         //create label to display you lose text
@@ -48,7 +37,7 @@ public class loseWindow extends Window  {
         scoreboard.setEditable(false);
 
         // Read contents of the leaderboard file
-        File file = new File("leaderBoard.txt");
+        File file = new File("leaderboard.txt");
         try (Scanner input = new Scanner(file)) {
             List<String> scores = new ArrayList<>();
             while (input.hasNextLine()) {
@@ -66,10 +55,16 @@ public class loseWindow extends Window  {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
+        this.add(loseText);
+        this.add(scoreboard);
 
-        frame.setVisible(true);
-        frame.add(loseText);
-        frame.add(scoreboard);
+        this.pack();
+        this.setVisible(true);
     }
 
+    public static void main(String[] args) throws Exception {
+
+        new loseWindow();
+
+    }
 }
