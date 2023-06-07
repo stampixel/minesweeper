@@ -18,7 +18,7 @@ public class MineAlgorithm {
      * 0 represents empty square, 1 represents mine, 2 represents mine flagged by used
      *
      * @param row
-     * @param col
+     * @param cols
      * @return
      */
     public static int[][] generateBoard(int row, int col) {
