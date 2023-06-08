@@ -115,7 +115,7 @@ public class Rules extends Window implements ActionListener {
 
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == button) {
-            //Need to add code
+            new MainMenu();
         }
     }
 }
