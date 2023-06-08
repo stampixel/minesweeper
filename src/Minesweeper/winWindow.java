@@ -2,6 +2,19 @@ package Minesweeper;
 
 /**
  * @author Andrew
+ * Version 2
+ * Updated GUI Look
+ * Added consistent background
+ * Added image icon showing a win image
+ * changed button to red
+ * Updated localization files
+ */
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+
+/**
+ * @author Andrew
  */
 
 import java.awt.Dimension;
@@ -15,11 +28,17 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,15 +48,22 @@ public class winWindow extends Window implements ActionListener {
 
     static String username = "";
     //create variables to be accessed from class regardless of method
+    ImageIcon lostIMG;
+    JLabel imageHolder;
+    JTextArea scoreboard;
+    File leaderboardFile;
     JButton button;
     JTextField textField;
+    JPanel topPanel;
+    JPanel middlePanel;
+    JPanel bottomPanel;
 
     /**
      * Constructor
      * Create a new window, and display win or lose text.
-     * Will also allow user to input username
-     * save username onto file
-     * Display leaderboard onto window
+     * Will also allow user to input user name
+     * save user name onto file
+     * Display leader board onto window
      *
      * @throws Exception
      */
@@ -46,30 +72,29 @@ public class winWindow extends Window implements ActionListener {
         super();
 
         //create the window
-        this.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10));
+        this.setLayout(new BorderLayout(0, 0));
 
-        //create a label to display onto window
-        JLabel winText = new JLabel();
-        winText.setText("You Win!");
-        winText.setFont(new Font("consolas", Font.PLAIN, 20));
-        winText.setHorizontalTextPosition(JLabel.CENTER);
-        winText.setVerticalTextPosition(JLabel.TOP);
+        //create win image and add to label
+        lostIMG = new ImageIcon("win.jpg");
+        imageHolder = new JLabel(lostIMG);
 
         //set text field specifics
         textField = new JTextField();
         textField.setPreferredSize(new Dimension(250, 40));
         textField.setFont(new Font("consolas", Font.PLAIN, 20));
         textField.setText("Please enter Username");
+        textField.setBackground(Color.GRAY);
 
         //create a area on the window to display leaderboard
-        JTextArea scoreboard = new JTextArea();
-        scoreboard.setPreferredSize(new Dimension(400, 500));
+        scoreboard = new JTextArea();
+        scoreboard.setPreferredSize(new Dimension(300, 200));
         scoreboard.setFont(new Font("consolas", Font.PLAIN, 16));
         scoreboard.setEditable(false);
+        scoreboard.setBackground(Color.GRAY);
 
         // Read contents of the leaderboard file
-        File file = new File("leaderboard.txt");
-        try (Scanner input = new Scanner(file)) {
+        leaderboardFile = new File("leaderboard.txt");
+        try (Scanner input = new Scanner(leaderboardFile)) {
             List<String> scores = new ArrayList<>();
             while (input.hasNextLine()) {
                 String line = input.nextLine();
@@ -89,13 +114,31 @@ public class winWindow extends Window implements ActionListener {
 
         //button to read user input
         button = new JButton("Submit");
+        button.setFont(new Font("consolas", Font.PLAIN, 16));
+        button.setPreferredSize(textField.getPreferredSize());
         button.addActionListener(this);
+        button.setBackground(Color.RED);
+
+        //top panel settings
+        topPanel = new JPanel();
+        topPanel.add(imageHolder, BorderLayout.NORTH);
+        topPanel.setBackground(Color.GRAY);
+
+        //Create middle panel and set its layout manager to FlowLayout
+        middlePanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
+        middlePanel.add(textField);
+        middlePanel.add(button);
+        middlePanel.setBackground(Color.GRAY);
+
+        //bottom panel
+        bottomPanel = new JPanel();
+        bottomPanel.add(scoreboard);
+        bottomPanel.setBackground(Color.GRAY);
 
         //make frame visible, and add other GUI components
-        this.add(winText);
-        this.add(textField);
-        this.add(button);
-        this.add(scoreboard);
+        this.add(topPanel, BorderLayout.NORTH);
+        this.add(middlePanel, BorderLayout.CENTER);
+        this.add(bottomPanel, BorderLayout.SOUTH);
 
         this.pack();
         this.setVisible(true);
