@@ -2,8 +2,7 @@ package Minesweeper;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 
 public class BoardWindow extends JFrame implements ActionListener {
     private static final int WIDTH = 600;
@@ -33,6 +32,7 @@ public class BoardWindow extends JFrame implements ActionListener {
     ImageIcon emptySquare;
     ImageIcon coveredSquare;
     int[][] navigation;
+    boolean[][] flagArray;
     ImageIcon[] mineImg;
 
 
@@ -69,6 +69,7 @@ public class BoardWindow extends JFrame implements ActionListener {
         mineFieldArray = new JButton[ROW][COL];
         mineRepresentationArray = new int[ROW][COL];
         mineAdjacentMatrix = new int[ROW][COL];
+        flagArray = new boolean[ROW][COL];
 
         this.mineNum = mineNum;
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -120,8 +121,11 @@ public class BoardWindow extends JFrame implements ActionListener {
     public void UpdateBoard() { // Have a premade board that stores the adjacent stuff
         for (int i = 0; i < mineRepresentationArray.length; i++) {
             for (int j = 0; j < mineRepresentationArray[0].length; j++) {
+
                 if (mineRepresentationArray[i][j] == 0) {
+
                     mineFieldArray[i][j].setIcon(coveredSquare);
+
                 } else if (mineRepresentationArray[i][j] == 1) {
                     int mineCount = 0;
                     for (int k = 0; k < navigation.length; k++) {
@@ -136,8 +140,14 @@ public class BoardWindow extends JFrame implements ActionListener {
 
                     mineFieldArray[i][j].setIcon(mineImg[mineCount]);
                 }
+                if (flagArray[i][j]) {
+                    mineFieldArray[i][j].setIcon(flag);
+                }
+
             }
         }
+
+
     }
 
     public boolean checkAdjacentMine(int row, int col) {
@@ -159,9 +169,7 @@ public class BoardWindow extends JFrame implements ActionListener {
         int fillCol;
         for (int i = 0; i < mineRepresentationArray.length; i++) {
             for (int j = 0; j < mineRepresentationArray[0].length; j++) {
-                System.out.print(mineRepresentationArray[i][j] + " ");
             }
-            System.out.println();
         }
 
         for (int i = 0; i < navigation.length; i++) {
@@ -197,7 +205,7 @@ public class BoardWindow extends JFrame implements ActionListener {
     }
 
     /**
-     * 0 represents empty square, 1 represents clicked empty square, 2 represents mine, 3 represents mine flag, 4 represents flagged mine
+     * 0 represents empty square, 1 uncovered square, 2 represents mine
      *
      * @param row
      * @param col
@@ -207,6 +215,18 @@ public class BoardWindow extends JFrame implements ActionListener {
             for (int j = 0; j < col; j++) {
                 mineFieldArray[i][j] = new JButton();
                 mineFieldArray[i][j].addActionListener(this);
+                int finalI = i;
+                int finalJ = j;
+                mineFieldArray[i][j].addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        if (e.getButton() == 3 && mineRepresentationArray[finalI][finalJ] != 1) {
+                            System.out.println("asdfaSDF");
+                            flagArray[finalI][finalJ] = !flagArray[finalI][finalJ]; // Switch
+                            UpdateBoard();
+                        }
+                    }
+                });
                 mineField.add(mineFieldArray[i][j]);
             }
         }
@@ -268,18 +288,18 @@ public class BoardWindow extends JFrame implements ActionListener {
      */
     @Override
     public void actionPerformed(ActionEvent e) {
-
-
-        System.out.println(ROW);
-
         for (int i = 0; i < ROW; i++) {
             for (int j = 0; j < COL; j++) {
-                if (e.getSource() == mineFieldArray[i][j]) {
-                    if (firstClick) {
+                if (false) {
+
+                } else if (e.getSource() == mineFieldArray[i][j]&& !flagArray[i][j]) {
+                    if (firstClick ) {
                         firstClick = false;
                         generateBoard(i, j);
                         mineRepresentationArray[i][j] = 1; // Uncover the square
-                        floodFill(i, j);
+                        if (!checkAdjacentMine(i, j)) {
+                            floodFill(i, j);
+                        }
                     } else if (mineRepresentationArray[i][j] == 0) { // If user clicked on a covered square
                         mineRepresentationArray[i][j] = 1; // Uncover the square
                         if (!checkAdjacentMine(i, j)) {
@@ -287,10 +307,37 @@ public class BoardWindow extends JFrame implements ActionListener {
                         }
                     } else if (mineRepresentationArray[i][j] == 2) { // If user clicked on a mine
                         showMine();
+
                     }
                     UpdateBoard();
+                    break;
+
                 }
             }
         }
+        for (int i = 0; i < mineRepresentationArray.length; i++) {
+            for (int j = 0; j < mineRepresentationArray[0].length; j++) {
+                System.out.print(mineRepresentationArray[i][j] + " ");
+            }
+            System.out.println();
+        }
+
+
+        if (checkWin()) {
+            System.out.println("you win");
+        }
     }
+
+    public boolean checkWin() {
+        boolean win = true;
+        for (int i = 0; i < mineRepresentationArray.length; i++) {
+            for (int j = 0; j < mineRepresentationArray[0].length; j++) {
+                if (mineRepresentationArray[i][j] == 0) {
+                    win = false;
+                }
+            }
+        }
+        return win;
+    }
+
 }
