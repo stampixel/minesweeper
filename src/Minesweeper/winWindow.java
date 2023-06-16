@@ -1,22 +1,12 @@
 package Minesweeper;
+
 /**
  * @author Andrew
- * Version 4
- * Changed Constructor to allow both difficulty, min, and second variable
- * Updated localization files
+ * Version 5
+ * Mikail fixed up the GUI and made the window look cleaner
  */
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Image;
-import java.awt.Insets;
-import java.awt.Toolkit;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -28,13 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
+import javax.imageio.ImageIO;
+import javax.swing.*;
 import javax.swing.border.LineBorder;
 
 public class winWindow extends Window implements ActionListener {
@@ -56,7 +41,7 @@ public class winWindow extends Window implements ActionListener {
     JButton quit;
 
     //Constructor Variables
-    String difficuluty;
+    String difficulty;
     int min;
     int sec;
 
@@ -70,39 +55,44 @@ public class winWindow extends Window implements ActionListener {
      */
     winWindow(String gameDiff, int gameMin, int gameSec) throws Exception {
         super();
-        difficuluty = gameDiff;
+        difficulty = gameDiff;
         min = gameMin;
         sec = gameSec;
         //create the window
         this.setLayout(new BorderLayout(0, 0));
 
-        // reate label to display you lose text
+        // Create border for buttons and labels
+        LineBorder lineBorder = new LineBorder(Color.gray, 5, true);
+
+        // create label to display you lose text
         winText = new JLabel();
-        winText.setText("You Win");
+        winText.setText("You Win!");
         winText.setOpaque(true);
         winText.setBackground(Color.lightGray);
         winText.setForeground(Color.BLACK);
-        winText.setFont(new Font("consolas", Font.PLAIN, 30));
+        winText.setFont(new Font("Roboto", Font.PLAIN, 30));
         winText.setHorizontalTextPosition(JLabel.CENTER);
         winText.setVerticalTextPosition(JLabel.CENTER);
+        winText.setBorder(lineBorder);
 
         //set text field specifics
         textField = new JTextField();
         textField.setPreferredSize(new Dimension(250, 40));
-        textField.setFont(new Font("consolas", Font.PLAIN, 20));
-        textField.setText("Please enter Username");
-        textField.setBackground(Color.white);
-        textField.setBorder(new LineBorder(Color.lightGray));
+        textField.setFont(new Font("Roboto", Font.PLAIN, 20));
+        textField.setText("Please enter Username:");
+        textField.setBackground(Color.lightGray);
+        textField.setBorder(lineBorder);
 
-        //create a area on the window to display leaderboard
+
+        //create a area on the window to display leaderboard.txt
         scoreboard = new JTextArea();
         scoreboard.setPreferredSize(new Dimension(300, 200));
-        scoreboard.setFont(new Font("consolas", Font.PLAIN, 20));
+        scoreboard.setFont(new Font("Roboto", Font.PLAIN, 20));
         scoreboard.setEditable(false);
         scoreboard.setBackground(Color.lightGray);
 
-        //Read contents of the leaderboard file
-        leaderboardFile = new File("leaderboard.txt");
+        //Read contents of the leaderboard.txt file
+        leaderboardFile = new File("leaderboard.txt.txt");
         try (Scanner input = new Scanner(leaderboardFile)) {
             List<String> scores = new ArrayList<>();
             while (input.hasNextLine()) {
@@ -123,21 +113,27 @@ public class winWindow extends Window implements ActionListener {
 
         //create text label
         JLabel leaderboard = new JLabel("Leaderboard");
-        leaderboard.setFont(new Font("consolas", Font.PLAIN, 25));
+        leaderboard.setFont(new Font("Roboto", Font.PLAIN, 25));
 
         //Instantiate mainMenu and quit usernameButtons
         mainMenu = new JButton("Main Menu");
         quit = new JButton("Quit");
 
         //Set the font and preferred size for the usernameButtons
-        mainMenu.setFont(new Font("consolas", Font.PLAIN, 30));
+        mainMenu.setFont(new Font("Roboto", Font.PLAIN, 30));
         mainMenu.setPreferredSize(new Dimension(200, 70));
-        quit.setFont(new Font("consolas", Font.PLAIN, 30));
+        mainMenu.setBorder(lineBorder);
+        quit.setFont(new Font("Roboto", Font.PLAIN, 30));
         quit.setPreferredSize(new Dimension(150, 70));
+        quit.setBorder(lineBorder);
 
-        //Set the background color for the usernameButtons
-        mainMenu.setBackground(Color.RED);
-        quit.setBackground(Color.RED);
+        // Set the main menu and quit buttons opaque
+        mainMenu.setOpaque(true);
+        quit.setOpaque(true);
+
+        // Set the background color for the usernameButtons
+        mainMenu.setBackground(Color.lightGray);
+        quit.setBackground(Color.lightGray);
 
         //Add action listeners to the usernameButtons
         mainMenu.addActionListener(this);
@@ -145,20 +141,21 @@ public class winWindow extends Window implements ActionListener {
 
         //usernameButton to read user input
         usernameButton = new JButton("Submit");
-        usernameButton.setFont(new Font("consolas", Font.PLAIN, 30));
+        usernameButton.setFont(new Font("Roboto", Font.PLAIN, 30));
         usernameButton.setPreferredSize(textField.getPreferredSize());
         usernameButton.addActionListener(this);
-        usernameButton.setBackground(Color.RED);
-        usernameButton.setBorder(new LineBorder(Color.RED));
+        usernameButton.setBackground(Color.lightGray);
+        usernameButton.setBorder(lineBorder);
 
         //Add components to inner top panel
         JPanel usernamePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         usernamePanel.add(textField);
         usernamePanel.add(usernameButton);
+        usernamePanel.setBorder(lineBorder);
 
         //innerTop panel
         JPanel innerTop = new JPanel();
-        innerTop.setBackground(Color.lightGray);
+        innerTop.setBackground(new Color(0, 0, 0, 0));
         innerTop.add(winText);
 
         //inner down panel
@@ -170,7 +167,7 @@ public class winWindow extends Window implements ActionListener {
         topPanel = new JPanel(new BorderLayout());
         topPanel.add(innerTop,BorderLayout.NORTH);
         topPanel.add(innerDown,BorderLayout.SOUTH);
-        topPanel.setBackground(Color.lightGray);
+        topPanel.setBackground(new Color(0, 0, 0, 0));
 
         //Create inner panels
         JPanel middleRightPanel = new JPanel();
@@ -186,22 +183,23 @@ public class winWindow extends Window implements ActionListener {
         JLabel time = new JLabel(min + ":" + sec);
         time.setFont(new Font("consolas", Font.PLAIN, 30));
         JPanel innerUpPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        innerUpPanel.setBackground(Color.lightGray);
+        innerUpPanel.setBackground(new Color(0, 0, 0, 0));
         innerUpPanel.add(timer);
         innerUpPanel.add(time);
 
         //Add components to innerDownPanel
         //need to super a variable for difficulty
         //need to add variable here
-        JLabel mode = new JLabel("Difficuluty: " + difficuluty);
+        JLabel mode = new JLabel("Difficulty: " + difficulty);
         mode.setFont(new Font("consolas", Font.PLAIN, 30));
         JPanel innerDownPanel = new JPanel();
-        innerDownPanel.setBackground(Color.lightGray);
+        innerDownPanel.setBackground(new Color(0, 0, 0, 0));
         innerDownPanel.add(mode);
 
         //Set GridBagConstraints for middlePanel
         JPanel middlePanel = new JPanel(new GridBagLayout());
         middlePanel.setBackground(Color.lightGray);
+        middlePanel.setBorder(lineBorder);
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
@@ -229,27 +227,31 @@ public class winWindow extends Window implements ActionListener {
         bottomPanel.add(quit, BorderLayout.EAST);
 
         //Set background color for panels
-        topPanel.setBackground(Color.lightGray);
+        topPanel.setBackground(new Color(0, 0, 0, 0));
         usernamePanel.setBackground(Color.lightGray);
-        bottomPanel.setBackground(Color.lightGray);
+        bottomPanel.setBackground(new Color(0, 0, 0, 0));
 
         //Main panel
-        JPanel mainPanel = new JPanel(new BorderLayout());
+        JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+        mainPanel.setBackground(new Color(0, 0, 0, 0));
 
-        mainPanel.add(topPanel, BorderLayout.NORTH);
-        mainPanel.add(middlePanel,BorderLayout.CENTER);
-        mainPanel.add(bottomPanel,BorderLayout.SOUTH);
+        topPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        middlePanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        bottomPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        //Set usernameButton settings
-        mainMenu.setPreferredSize(new Dimension(200, 70));
-        mainMenu.setBackground(Color.RED);
-        mainMenu.setFont(new Font("consolas", Font.PLAIN, 30));
-        quit.setPreferredSize(new Dimension(150, 70));
-        quit.setBackground(Color.RED);
-        quit.setFont(new Font("consolas", Font.PLAIN, 30));
+        mainPanel.add(topPanel);
+        mainPanel.add(Box.createRigidArea(new Dimension(10, 30)));
+        mainPanel.add(middlePanel);
+        mainPanel.add(Box.createRigidArea(new Dimension(10, 30)));
+        mainPanel.add(bottomPanel);
+
+        BottomPanel background = new BottomPanel();
+
+        background.add(mainPanel);
 
         //Make frame visible and add other GUI components
-        this.add(mainPanel);
+        this.add(background);
 
         this.setVisible(true);
     }
@@ -263,13 +265,13 @@ public class winWindow extends Window implements ActionListener {
     }
 
     //if submit button is pressed, take the text from the textfield
-    //and save to a leaderboard file
+    //and save to a leaderboard.txt file
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == usernameButton) {
             username = textField.getText();
             try {
-                PrintWriter out = new PrintWriter(new FileWriter("leaderboard.txt", true));
+                PrintWriter out = new PrintWriter(new FileWriter("leaderboard.txt.txt", true));
                 out.println(username + "|" + min + ":" + sec);
                 out.close();
                 usernameButton.setEnabled(false);
@@ -281,6 +283,29 @@ public class winWindow extends Window implements ActionListener {
             new MainMenu();
         } else if (e.getSource() == quit) {
             this.dispose();
+        }
+    }
+
+    /**
+     * This class creates a panel which serves as the background panel for the main menu
+     * of a minesweeper game. The class prints an image onto the panel so that other panels
+     * can be added on to it.
+     *
+     * @author mikail.hussain
+     */
+
+    class BottomPanel extends JPanel {
+        Image img;
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            try {
+                img = ImageIO.read(new File("BG.png"));
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            g.drawImage(img, 0, 0, null);
         }
     }
 

@@ -6,6 +6,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class BoardWindow extends JFrame implements ActionListener {
+    int mineHeight;
+    int mineWidth;
     private static final int WIDTH = 600;
     private static final int HEIGHT = 700;
     public JButton[][] mineFieldArray;
@@ -20,13 +22,15 @@ public class BoardWindow extends JFrame implements ActionListener {
 
 
     BoardWindow(int mineRow, int mineCol, int mineNum) {
+        mineHeight = 48;
+        mineWidth = 48;
         firstClick = true;
         row = mineRow;
         col = mineCol;
         mineNum = this.mineNum;
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setResizable(false);
-        this.setSize(WIDTH, HEIGHT);
+        this.setSize(mineRow*mineWidth, mineCol*mineHeight+80+80);
         this.setVisible(true);
 
         this.setLayout(new BorderLayout(10, 10));
@@ -85,7 +89,7 @@ public class BoardWindow extends JFrame implements ActionListener {
             for (int j = 0; j < col; j++) {
                 mineFieldArray[i][j] = new JButton();
                 mineFieldArray[i][j].addActionListener(this);
-                mineFieldArray[i][j].setSize(new Dimension(15, 15));
+                mineFieldArray[i][j].setSize(new Dimension(10, 10));
                 mineFieldArray[i][j].setBackground(Color.RED);
                 mineField.add(mineFieldArray[i][j]);
             }

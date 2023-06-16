@@ -25,7 +25,7 @@ import javax.sound.sampled.Clip;
  * It includes a title, a rules button, a play button, and a quit button
  */
 
-public class MainMenu extends Window implements ActionListener {
+public class MainMenu extends Window{
 
     JButton rules;
     JButton play;
@@ -46,7 +46,33 @@ public class MainMenu extends Window implements ActionListener {
         quit = new JButton("Quit");
 
         // Listen to the quit button for input
-        quit.addActionListener(this);
+        quit.addActionListener(
+                new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        System.exit(0);
+                    }
+                }
+        );
+
+        // Listen to the play button for input
+        play.addActionListener(
+                new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+//                        new Difficulty();
+                        dispose();
+                    }
+                }
+        );
+
+        // Listen to the rules button for input
+        rules.addActionListener(
+                new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        new Rules();
+                        dispose();
+                    }
+                }
+        );
 
         // Set button fonts
         rules.setFont(new Font("Roboto", Font.PLAIN, 25));
@@ -82,7 +108,7 @@ public class MainMenu extends Window implements ActionListener {
         label.setBackground(Color.LIGHT_GRAY);
 
         // Create bomb image
-        ImageIcon bomb = new ImageIcon("bomb3.png");
+        ImageIcon bomb = new ImageIcon("MenuBomb.png");
         JLabel bombLabel = new JLabel(bomb);
 
         // Create panel, set transparent, and set layout
@@ -116,6 +142,7 @@ public class MainMenu extends Window implements ActionListener {
         this.add(background);
 
 
+
         // Make the menu close when the window closes and make the frame and panels
         // visible
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -130,12 +157,15 @@ public class MainMenu extends Window implements ActionListener {
      */
 
     public static void main(String[] args) {
+        // Play music
+        playMusic("Music.wav");
         new MainMenu();
-        playMusic("Windmill_Isle.wav");
-
-
     }
 
+    /**
+     * This class plays music
+     * @param location
+     */
     public static void playMusic(String location) {
         try {
             File musicPath = new File(location);
@@ -146,7 +176,6 @@ public class MainMenu extends Window implements ActionListener {
                 clip.open(audioInput);
                 clip.start();
                 clip.loop(Clip.LOOP_CONTINUOUSLY);
-                Thread.sleep(clip.getMicrosecondLength() / 1000);
             } else {
                 System.out.println("Can't find file");
             }
@@ -155,16 +184,6 @@ public class MainMenu extends Window implements ActionListener {
             System.out.println(e);
         }
     }
-
-    /**
-     * Action button method
-     */
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        System.exit(0); // Make the menu close when the quit button is pressed
-    }
-
 
     /**
      * This class creates a panel which serves as the background panel for the main menu
@@ -180,7 +199,7 @@ public class MainMenu extends Window implements ActionListener {
         @Override
         protected void paintComponent(Graphics g) {
             try {
-                img = ImageIO.read(new File("mineBoard.png"));
+                img = ImageIO.read(new File("BG.png"));
             } catch (IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();

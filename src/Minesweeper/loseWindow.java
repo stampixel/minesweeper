@@ -1,37 +1,29 @@
 package Minesweeper;
+
 /**
  * @author Andrew
- * Version 4
- * Changed constructor to have minutes, and seconds
- * Updated localization files
+ * Version 5
+ * Mikail fixed up the GUI and made the window look cleaner
  */
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
+import java.awt.*;
 
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Font;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextArea;
+import javax.imageio.ImageIO;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-
+import javax.swing.border.LineBorder;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledDocument;
 
 
 public class loseWindow extends Window implements ActionListener {
@@ -40,7 +32,7 @@ public class loseWindow extends Window implements ActionListener {
     JButton mainMenu;
     JButton quit;
     JLabel leaderboardText;
-    JTextArea scoreboard;
+    JTextPane scoreboard;
     File leaderboardFile;
 
     ImageIcon lostIMG;
@@ -54,47 +46,65 @@ public class loseWindow extends Window implements ActionListener {
     int seconds;
 
     loseWindow(int gameMin, int gameSec) throws Exception {
+
+        // Create border for buttons and labels
+        LineBorder lineBorder = new LineBorder(Color.gray, 5, true);
+
         minutes = gameMin;
         seconds = gameSec;
         mainMenu = new JButton("Main Menu");
+        mainMenu.setOpaque(true);
+        mainMenu.setBackground(Color.lightGray);
+        mainMenu.setBorder(lineBorder);
         quit = new JButton("Quit");
+        quit.setOpaque(true);
+        quit.setBackground(Color.lightGray);
+        quit.setBorder(lineBorder);
 
         this.setLayout(new BorderLayout(0, 0));
 
+
         //create label to display you lose text
-        leaderboardText = new JLabel();
-        leaderboardText.setText("Leaderboard");
+        leaderboardText = new JLabel("Leaderboard:", SwingConstants.CENTER);
         leaderboardText.setOpaque(true);
         leaderboardText.setBackground(Color.lightGray);
         leaderboardText.setForeground(Color.BLACK);
-        leaderboardText.setFont(new Font("consolas", Font.PLAIN, 30));
-        leaderboardText.setHorizontalTextPosition(JLabel.CENTER);
-        leaderboardText.setVerticalTextPosition(JLabel.CENTER);
+        leaderboardText.setFont(new Font("Roboto", Font.PLAIN, 30));
 
-        //create a area on the window to display leaderboard
-        scoreboard = new JTextArea();
+        //create a area on the window to display leaderboard.txt
+        scoreboard = new JTextPane();
         scoreboard.setPreferredSize(new Dimension(300, 200));
-        scoreboard.setFont(new Font("consolas", Font.PLAIN, 20));
+        scoreboard.setFont(new Font("Roboto", Font.PLAIN, 20));
         scoreboard.setEditable(false);
         scoreboard.setBackground(Color.lightGray);
 
+        // Center the text
+        StyledDocument doc = scoreboard.getStyledDocument();
+        SimpleAttributeSet center = new SimpleAttributeSet();
+        StyleConstants.setAlignment(center, StyleConstants.ALIGN_CENTER);
+        doc.setParagraphAttributes(0, doc.getLength(), center, false);
+
 
         //creating text and adding to label
-        JLabel textHolder = new JLabel("You Lost");
-        textHolder.setFont(new Font("consolas", Font.PLAIN, 60));
+        JLabel textHolder = new JLabel("You Lost!");
+        textHolder.setFont(new Font("Roboto", Font.PLAIN, 60));
+        textHolder.setBackground(Color.lightGray);
+        textHolder.setOpaque(true);
+        textHolder.setBorder(lineBorder);
         topPanel = new JPanel();
-        topPanel.setBackground(Color.lightGray);
+        topPanel.setBackground(new Color(0, 0, 0, 0));
         topPanel.setLayout(new BorderLayout());
 
         //display time elapsed
         //NEED TO SUPER TIME VARAIBLE
-        JLabel timer = new JLabel("time spent: " + minutes + ":" + seconds);
-        timer.setFont(new Font("consolas", Font.PLAIN, 30));
+        JLabel timer = new JLabel("Time spent: " + minutes + ":" + seconds);
+        timer.setFont(new Font("Roboto", Font.PLAIN, 30));
         timer.setOpaque(true);
         timer.setBackground(Color.lightGray); // Use light gray color
         timer.setForeground(Color.BLACK);
+        timer.setBorder(lineBorder);
 
-        // Read contents of the leaderboard file
+        // Read contents of the leaderboard.txt file
         leaderboardFile = new File("leaderboard.txt");
         try (Scanner input = new Scanner(leaderboardFile)) {
             List<String> scores = new ArrayList<>();
@@ -116,7 +126,7 @@ public class loseWindow extends Window implements ActionListener {
 
         //Create panel for "You Lost" text
         JPanel textPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        textPanel.setBackground(Color.lightGray);
+        textPanel.setBackground(new Color(0, 0, 0, 0));
         textPanel.setBorder(BorderFactory.createEmptyBorder(40, 0, 0, 0)); // Add empty border for top spacing
         textPanel.add(textHolder);
 
@@ -129,7 +139,9 @@ public class loseWindow extends Window implements ActionListener {
         JPanel rightMiddle = new JPanel(new BorderLayout());
         rightMiddle.add(leaderboardText, BorderLayout.NORTH);
         rightMiddle.add(scoreboard, BorderLayout.CENTER);
+        rightMiddle.setBorder(lineBorder);
         JPanel leftMiddle = new JPanel(new BorderLayout());
+        leftMiddle.setBorder(lineBorder);
 
         //Add an empty border around the timer label to create spacing
         timer.setBorder(new EmptyBorder(10, 0, 0, 0));
@@ -169,16 +181,27 @@ public class loseWindow extends Window implements ActionListener {
 
         //button settings
         mainMenu.setPreferredSize(new Dimension(200, 70));
-        mainMenu.setBackground(Color.RED);
-        mainMenu.setFont(new Font("consolas", Font.PLAIN, 30));
+        mainMenu.setFont(new Font("Roboto", Font.PLAIN, 30));
         quit.setPreferredSize(new Dimension(150, 70));
-        quit.setBackground(Color.RED);
-        quit.setFont(new Font("consolas", Font.PLAIN, 30));
+        quit.setFont(new Font("Roboto", Font.PLAIN, 30));
+
+        BottomPanel background = new BottomPanel();
+        background.setLayout(new BoxLayout(background, BoxLayout.Y_AXIS));
+
+        topPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        middlePanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        bottomPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        topPanel.setBackground(new Color(0, 0, 0, 0));
+        middlePanel.setBackground(new Color(0, 0, 0, 0));
+        bottomPanel.setBackground(new Color(0, 0, 0, 0));
+
 
         //frame settings
-        this.add(topPanel, BorderLayout.NORTH);
-        this.add(middlePanel, BorderLayout.CENTER);
-        this.add(bottomPanel, BorderLayout.SOUTH);
+        background.add(topPanel);
+        background.add(middlePanel);
+        background.add(bottomPanel);
+        this.add(background);
         this.setVisible(true);
     }
 
@@ -212,5 +235,20 @@ public class loseWindow extends Window implements ActionListener {
         this.dispose();
         new MainMenu();
 
+    }
+
+    class BottomPanel extends JPanel {
+        Image img;
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            try {
+                img = ImageIO.read(new File("BG.png"));
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            g.drawImage(img, 0, 0, null);
+        }
     }
 }
