@@ -1,30 +1,21 @@
 package Minesweeper;
+/**
+ * @author Andrew
+ * Version 4
+ * Changed constructor to have minutes, and seconds
+ * Updated localization files
+ */
 
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-
-/**
- * KEVIN: REFORMATED
- *
- * @author Andrew
- * Version 2
- * Updated GUI Look
- * Added quit menu
- * Added lost image
- * added action for quit button
- * Need to add action for calling the game again
- * displayed text better
- * May add time spent, Still need to wait for time implemented in other class
- * will add time, and difficulty into constructor
- * Updated localization files
- */
 
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -33,18 +24,22 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
+import javax.swing.border.EmptyBorder;
+
+
 
 public class loseWindow extends Window implements ActionListener {
 
     //create buttons
     JButton mainMenu;
     JButton quit;
-    JLabel scoreText;
+    JLabel leaderboardText;
     JTextArea scoreboard;
     File leaderboardFile;
 
@@ -52,29 +47,52 @@ public class loseWindow extends Window implements ActionListener {
     JLabel imageHolder;
     JPanel topPanel;
     JPanel middlePanel;
-    GridBagConstraints constraints;
+    GridBagConstraints middleConstraints;
     JPanel bottomPanel;
 
+    int minutes;
+    int seconds;
 
-    loseWindow() throws Exception {
+    loseWindow(int gameMin, int gameSec) throws Exception {
+        minutes = gameMin;
+        seconds = gameSec;
         mainMenu = new JButton("Main Menu");
         quit = new JButton("Quit");
 
         this.setLayout(new BorderLayout(0, 0));
 
         //create label to display you lose text
-        scoreText = new JLabel();
-        scoreText.setText("Leaderboard");
-        scoreText.setFont(new Font("consolas", Font.PLAIN, 22));
-        scoreText.setHorizontalTextPosition(JLabel.CENTER);
-        scoreText.setVerticalTextPosition(JLabel.CENTER);
+        leaderboardText = new JLabel();
+        leaderboardText.setText("Leaderboard");
+        leaderboardText.setOpaque(true);
+        leaderboardText.setBackground(Color.lightGray);
+        leaderboardText.setForeground(Color.BLACK);
+        leaderboardText.setFont(new Font("consolas", Font.PLAIN, 30));
+        leaderboardText.setHorizontalTextPosition(JLabel.CENTER);
+        leaderboardText.setVerticalTextPosition(JLabel.CENTER);
 
         //create a area on the window to display leaderboard
         scoreboard = new JTextArea();
-        scoreboard.setPreferredSize(new Dimension(300, 150));
-        scoreboard.setFont(new Font("consolas", Font.PLAIN, 16));
+        scoreboard.setPreferredSize(new Dimension(300, 200));
+        scoreboard.setFont(new Font("consolas", Font.PLAIN, 20));
         scoreboard.setEditable(false);
-        scoreboard.setBackground(Color.gray);
+        scoreboard.setBackground(Color.lightGray);
+
+
+        //creating text and adding to label
+        JLabel textHolder = new JLabel("You Lost");
+        textHolder.setFont(new Font("consolas", Font.PLAIN, 60));
+        topPanel = new JPanel();
+        topPanel.setBackground(Color.lightGray);
+        topPanel.setLayout(new BorderLayout());
+
+        //display time elapsed
+        //NEED TO SUPER TIME VARAIBLE
+        JLabel timer = new JLabel("time spent: " + minutes + ":" + seconds);
+        timer.setFont(new Font("consolas", Font.PLAIN, 30));
+        timer.setOpaque(true);
+        timer.setBackground(Color.lightGray); // Use light gray color
+        timer.setForeground(Color.BLACK);
 
         // Read contents of the leaderboard file
         leaderboardFile = new File("leaderboard.txt");
@@ -95,60 +113,80 @@ public class loseWindow extends Window implements ActionListener {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        //creating image and adding to label
-        lostIMG = new ImageIcon("lost.jpg");
-        imageHolder = new JLabel(lostIMG);
-        topPanel = new JPanel();
-        topPanel.add(imageHolder);
 
-        //create middle panel, and center panel to center both the text on top of the score board
-        //and leader board scores
+        //Create panel for "You Lost" text
+        JPanel textPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        textPanel.setBackground(Color.lightGray);
+        textPanel.setBorder(BorderFactory.createEmptyBorder(40, 0, 0, 0)); // Add empty border for top spacing
+        textPanel.add(textHolder);
+
+        // Create top panel and add the text panel
+        JPanel topPanel = new JPanel(new BorderLayout());
+        topPanel.setBackground(Color.lightGray);
+        topPanel.add(textPanel, BorderLayout.CENTER);
+
+        //create inner middle layout panels
+        JPanel rightMiddle = new JPanel(new BorderLayout());
+        rightMiddle.add(leaderboardText, BorderLayout.NORTH);
+        rightMiddle.add(scoreboard, BorderLayout.CENTER);
+        JPanel leftMiddle = new JPanel(new BorderLayout());
+
+        //Add an empty border around the timer label to create spacing
+        timer.setBorder(new EmptyBorder(10, 0, 0, 0));
+        leftMiddle.add(timer, BorderLayout.CENTER);
+
+        //set the layout manager for middle panel as GridBagLayout
         middlePanel = new JPanel(new GridBagLayout());
-        constraints = new GridBagConstraints();
-        constraints.gridx = 0;
-        constraints.gridy = 0;
-        constraints.weighty = 1.0;
-        constraints.anchor = GridBagConstraints.CENTER;
-        middlePanel.add(scoreText, constraints);
 
-        constraints.gridy = 1;
-        constraints.weighty = 0.0;
-        middlePanel.add(scoreboard, constraints);
+        //create a different variable name for GridBagConstraints, e.g., timerConstraints
+        GridBagConstraints timerConstraints = new GridBagConstraints();
+        timerConstraints.gridx = 0;
+        timerConstraints.gridy = 0;
+        timerConstraints.anchor = GridBagConstraints.NORTH;
+        timerConstraints.insets = new Insets(0, 0, 20, 40);
+        middlePanel.add(leftMiddle, timerConstraints);
+
+        //Adjust the y-coordinate for the leader board
+        timerConstraints.gridx = 1;
+        timerConstraints.gridy = 0;
+        timerConstraints.insets = new Insets(0, 40, 20, 0);
+        middlePanel.add(rightMiddle, timerConstraints);
 
         //create bottom panel
-        bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 40, 20));
+        bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 70, 20));
         bottomPanel.add(mainMenu, BorderLayout.WEST);
         bottomPanel.add(quit, BorderLayout.EAST);
 
 
         //set background color
-        topPanel.setBackground(Color.GRAY);
-        middlePanel.setBackground(Color.GRAY);
-        bottomPanel.setBackground(Color.GRAY);
+        topPanel.setBackground(Color.lightGray);
+        middlePanel.setBackground(Color.lightGray);
+        bottomPanel.setBackground(Color.lightGray);
 
         //add action listners to buttons
         mainMenu.addActionListener(this);
         quit.addActionListener(this);
 
         //button settings
-        mainMenu.setPreferredSize(new Dimension(150, 70));
+        mainMenu.setPreferredSize(new Dimension(200, 70));
         mainMenu.setBackground(Color.RED);
-        mainMenu.setFont(new Font("consolas", Font.PLAIN, 20));
+        mainMenu.setFont(new Font("consolas", Font.PLAIN, 30));
         quit.setPreferredSize(new Dimension(150, 70));
         quit.setBackground(Color.RED);
-        quit.setFont(new Font("consolas", Font.PLAIN, 20));
+        quit.setFont(new Font("consolas", Font.PLAIN, 30));
 
         //frame settings
         this.add(topPanel, BorderLayout.NORTH);
         this.add(middlePanel, BorderLayout.CENTER);
         this.add(bottomPanel, BorderLayout.SOUTH);
-        this.pack();
         this.setVisible(true);
     }
 
     //main method creates the lost window
     public static void main(String[] args) throws Exception {
-        new loseWindow();
+        int min = 0;
+        int sec = 33;
+        new loseWindow(min, sec);
     }
 
     //button actions
@@ -170,6 +208,9 @@ public class loseWindow extends Window implements ActionListener {
 
     //method will restart game
     private void restartGame() throws Exception {
+        //opens new window
+        this.dispose();
         new MainMenu();
+
     }
 }

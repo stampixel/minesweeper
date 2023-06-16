@@ -72,7 +72,7 @@ public class BoardWindow extends JFrame implements ActionListener {
     }
 
     /**
-     * 0 represents empty square, 1 represents mine, 2 represents mine flagged by used
+     * 0 represents empty square, 1 represents mine, 2 represents mine flag, 3 represents flagged mine
      *
      * @param row
      * @param col
