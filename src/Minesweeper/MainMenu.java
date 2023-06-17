@@ -1,16 +1,12 @@
 package Minesweeper;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Image;
 import java.awt.event.*;
 import java.io.File;
-import java.io.IOException;
 import javax.swing.border.LineBorder;
 
 import javax.sound.sampled.AudioInputStream;
@@ -30,6 +26,8 @@ public class MainMenu extends Window{
     JButton rules;
     JButton play;
     JButton quit;
+    JPanel panel;
+    BottomPanel background;
 
     MainMenu() {
         super();
@@ -58,7 +56,7 @@ public class MainMenu extends Window{
         play.addActionListener(
                 new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
-//                        new Difficulty();
+                        new DifficultySelection();
                         dispose();
                     }
                 }
@@ -112,13 +110,13 @@ public class MainMenu extends Window{
         JLabel bombLabel = new JLabel(bomb);
 
         // Create panel, set transparent, and set layout
-        JPanel panel = new JPanel();
+        panel = new JPanel();
         panel.setBackground(new Color(0, 0, 0, 0));
         BoxLayout boxlayout = new BoxLayout(panel, BoxLayout.Y_AXIS);
         panel.setLayout(boxlayout);
 
         // Create background panel
-        BottomPanel background = new BottomPanel();
+        background = new BottomPanel();
 
         // Align the buttons/title in the center of the menu
         bombLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -152,7 +150,6 @@ public class MainMenu extends Window{
 
     /**
      * Print menu
-     *
      * @param args
      */
 
@@ -182,29 +179,6 @@ public class MainMenu extends Window{
 
         } catch (Exception e) {
             System.out.println(e);
-        }
-    }
-
-    /**
-     * This class creates a panel which serves as the background panel for the main menu
-     * of a minesweeper game. The class prints an image onto the panel so that other panels
-     * can be added on to it.
-     *
-     * @author mikail.hussain
-     */
-
-    class BottomPanel extends JPanel {
-        Image img;
-
-        @Override
-        protected void paintComponent(Graphics g) {
-            try {
-                img = ImageIO.read(new File("BG.png"));
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-            g.drawImage(img, 0, 0, null);
         }
     }
 }

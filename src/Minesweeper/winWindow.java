@@ -53,10 +53,9 @@ public class winWindow extends Window implements ActionListener {
      *
      * @throws Exception
      */
-    winWindow(String gameDiff, int gameMin, int gameSec) throws Exception {
+    winWindow(String gameDiff, int gameSec) throws Exception {
         super();
         difficulty = gameDiff;
-        min = gameMin;
         sec = gameSec;
         //create the window
         this.setLayout(new BorderLayout(0, 0));
@@ -259,9 +258,8 @@ public class winWindow extends Window implements ActionListener {
     //main method
     public static void main(String[] args) throws Exception {
         String tempDiff = "ez";
-        int tempMin = 1;
         int tempSec = 59;
-        new winWindow(tempDiff, tempMin, tempSec);
+        new winWindow(tempDiff, tempSec);
     }
 
     //if submit button is pressed, take the text from the textfield

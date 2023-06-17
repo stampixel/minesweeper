@@ -42,15 +42,13 @@ public class loseWindow extends Window implements ActionListener {
     GridBagConstraints middleConstraints;
     JPanel bottomPanel;
 
-    int minutes;
     int seconds;
 
-    loseWindow(int gameMin, int gameSec) throws Exception {
+    loseWindow(int gameSec) throws Exception {
 
         // Create border for buttons and labels
         LineBorder lineBorder = new LineBorder(Color.gray, 5, true);
 
-        minutes = gameMin;
         seconds = gameSec;
         mainMenu = new JButton("Main Menu");
         mainMenu.setOpaque(true);
@@ -97,7 +95,7 @@ public class loseWindow extends Window implements ActionListener {
 
         //display time elapsed
         //NEED TO SUPER TIME VARAIBLE
-        JLabel timer = new JLabel("Time spent: " + minutes + ":" + seconds);
+        JLabel timer = new JLabel("Time spent: " + seconds);
         timer.setFont(new Font("Roboto", Font.PLAIN, 30));
         timer.setOpaque(true);
         timer.setBackground(Color.lightGray); // Use light gray color
@@ -209,7 +207,7 @@ public class loseWindow extends Window implements ActionListener {
     public static void main(String[] args) throws Exception {
         int min = 0;
         int sec = 33;
-        new loseWindow(min, sec);
+        new loseWindow(sec);
     }
 
     //button actions
@@ -235,20 +233,5 @@ public class loseWindow extends Window implements ActionListener {
         this.dispose();
         new MainMenu();
 
-    }
-
-    class BottomPanel extends JPanel {
-        Image img;
-
-        @Override
-        protected void paintComponent(Graphics g) {
-            try {
-                img = ImageIO.read(new File("BG.png"));
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-            g.drawImage(img, 0, 0, null);
-        }
     }
 }

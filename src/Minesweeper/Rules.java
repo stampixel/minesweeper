@@ -83,7 +83,7 @@ public class Rules extends Window implements ActionListener{
         button.setBackground(Color.lightGray);
         button.setBorder(line);
 
-        ImageIcon bomb1 = new ImageIcon("RuleBomb.png");
+        ImageIcon bomb1 = new ImageIcon("bomb1.png");
         JLabel bomb1Holder = new JLabel(bomb1);
 
         JPanel BottomLeft = new JPanel();
@@ -91,7 +91,7 @@ public class Rules extends Window implements ActionListener{
         BottomLeft.setBackground(new Color(0, 0, 0, 0));
         BottomLeft.setBounds(200,450,200,200);
 
-        ImageIcon Fun = new ImageIcon("RuleFun.png");
+        ImageIcon Fun = new ImageIcon("Fun1.png");
         JLabel FunHolder = new JLabel(Fun);
 
         JPanel BottomRight = new JPanel();
@@ -127,21 +127,6 @@ public class Rules extends Window implements ActionListener{
         if (e.getSource() == button) {
             new MainMenu();
             dispose();
-        }
-    }
-
-    class BottomPanel extends JPanel {
-        Image img;
-
-        @Override
-        protected void paintComponent(Graphics g) {
-            try {
-                img = ImageIO.read(new File("BG.png"));
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-            g.drawImage(img, 0, 0, null);
         }
     }
 }

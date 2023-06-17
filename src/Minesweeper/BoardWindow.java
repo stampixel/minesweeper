@@ -7,6 +7,7 @@ import java.awt.event.*;
 import java.util.concurrent.TimeUnit;
 
 public class BoardWindow extends JFrame implements ActionListener {
+    String difficulty;
     private static final int WIDTH = 600;
     private static final int HEIGHT = 700;
     public JButton[][] mineFieldArray;
@@ -380,9 +381,7 @@ public class BoardWindow extends JFrame implements ActionListener {
                         }
                     } else if (mineRepresentationArray[i][j] == 2) { // If user clicked on a mine
                         showMine();
-
                         checkLose = true;
-
                     }
                     UpdateBoard();
                     break;
@@ -391,9 +390,20 @@ public class BoardWindow extends JFrame implements ActionListener {
             }
         }
 
+        if (ROW == 9 && COL == 9 && mineNum == 10) {
+            difficulty = "Beginner";
+        } else if (ROW == 16 && COL == 16 && mineNum == 40) {
+            difficulty = "Intermediate";
+        } else if (ROW == 24 && COL == 24 && mineNum == 99) {
+            difficulty = "Advanced";
+        } else {
+            difficulty = "custom";
+        }
+
+
         if (checkWin()) {
             try {
-                new winWindow("null", 0, 0);
+                new winWindow(difficulty, time);
             } catch (Exception ex) {
                 throw new RuntimeException(ex);
             }
@@ -402,7 +412,7 @@ public class BoardWindow extends JFrame implements ActionListener {
         if (checkLose) {
             try {
                 Thread.sleep(2000);
-                new loseWindow(0, 0);
+                new loseWindow(time);
                 dispose();
             } catch (Exception ex) {
                 throw new RuntimeException(ex);
