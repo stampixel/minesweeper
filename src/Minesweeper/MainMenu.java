@@ -29,7 +29,7 @@ public class MainMenu extends Window{
     JPanel panel;
     BottomPanel background;
 
-    MainMenu() {
+    MainMenu() throws Exception {
         super();
 
         // Create border for buttons and labels
@@ -56,7 +56,11 @@ public class MainMenu extends Window{
         play.addActionListener(
                 new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
-                        new DifficultySelection();
+                        try {
+                            new DifficultySelection();
+                        } catch (Exception ex) {
+                            throw new RuntimeException(ex);
+                        }
                         dispose();
                     }
                 }
@@ -66,7 +70,11 @@ public class MainMenu extends Window{
         rules.addActionListener(
                 new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
-                        new Rules();
+                        try {
+                            new Rules();
+                        } catch (Exception ex) {
+                            throw new RuntimeException(ex);
+                        }
                         dispose();
                     }
                 }
@@ -153,7 +161,7 @@ public class MainMenu extends Window{
      * @param args
      */
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         // Play music
         playMusic("Music.wav");
         new MainMenu();

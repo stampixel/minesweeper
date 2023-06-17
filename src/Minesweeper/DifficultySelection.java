@@ -38,7 +38,7 @@ public class DifficultySelection extends Window{
     int height;
     int bombs;
 
-    DifficultySelection() {
+    DifficultySelection() throws Exception {
         super();
 
         // Create border for buttons and labels
@@ -203,7 +203,7 @@ public class DifficultySelection extends Window{
      * @param args
      */
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         new DifficultySelection();
         playMusic("Music.wav");
 

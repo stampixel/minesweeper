@@ -42,7 +42,6 @@ public class winWindow extends Window implements ActionListener {
 
     //Constructor Variables
     String difficulty;
-    int min;
     int sec;
 
 
@@ -91,7 +90,7 @@ public class winWindow extends Window implements ActionListener {
         scoreboard.setBackground(Color.lightGray);
 
         //Read contents of the leaderboard.txt file
-        leaderboardFile = new File("leaderboard.txt.txt");
+        leaderboardFile = new File("leaderboard.txt");
         try (Scanner input = new Scanner(leaderboardFile)) {
             List<String> scores = new ArrayList<>();
             while (input.hasNextLine()) {
@@ -179,7 +178,7 @@ public class winWindow extends Window implements ActionListener {
         //Add components to inner panels
         JLabel timer = new JLabel("Time Elapsed: ");
         timer.setFont(new Font("consolas", Font.PLAIN, 30));
-        JLabel time = new JLabel(min + ":" + sec);
+        JLabel time = new JLabel(String.valueOf(sec));
         time.setFont(new Font("consolas", Font.PLAIN, 30));
         JPanel innerUpPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         innerUpPanel.setBackground(new Color(0, 0, 0, 0));
@@ -269,16 +268,21 @@ public class winWindow extends Window implements ActionListener {
         if (e.getSource() == usernameButton) {
             username = textField.getText();
             try {
-                PrintWriter out = new PrintWriter(new FileWriter("leaderboard.txt", true));
-                out.println(username + "-" + sec+ "-");
-                out.close();
+                addToLeaderboard(leaderboardScores, leaderboardUsernames, sec, username);
+
                 usernameButton.setEnabled(false);
             } catch (IOException e1) {
                 e1.printStackTrace();
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
             }
         } else if (e.getSource() == mainMenu) {
             this.dispose();
-            new MainMenu();
+            try {
+                new MainMenu();
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
         } else if (e.getSource() == quit) {
             this.dispose();
             System.exit(0);

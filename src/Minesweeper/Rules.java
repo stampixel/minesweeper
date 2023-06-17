@@ -13,7 +13,7 @@ public class Rules extends Window implements ActionListener{
 
     JButton button;
 
-    Rules () {
+    Rules () throws Exception {
         super();
         this.setTitle("Rules");
 
@@ -119,13 +119,17 @@ public class Rules extends Window implements ActionListener{
 
 
     }
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         new Rules();
     }
 
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == button) {
-            new MainMenu();
+            try {
+                new MainMenu();
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
             dispose();
         }
     }

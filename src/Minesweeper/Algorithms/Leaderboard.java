@@ -56,7 +56,7 @@ public class Leaderboard {
         // Bubblesorts all scores and usernames in the leaderboard file in descending order
         for (int i = 0; i < leaderboardScores.length - 1; i++) {
             for (int j = 0; j < leaderboardScores.length - i - 1; j++) {
-                if (leaderboardScores[j] < leaderboardScores[j + 1]) {
+                if (leaderboardScores[j] > leaderboardScores[j + 1]) {
                     int temp = leaderboardScores[j];
                     String tempName = leaderboardUsernames[j];
                     leaderboardScores[j] = leaderboardScores[j + 1];
