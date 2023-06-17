@@ -3,6 +3,7 @@ package Minesweeper;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.concurrent.TimeUnit;
 
 public class BoardWindow extends JFrame implements ActionListener {
     private static final int WIDTH = 600;
@@ -34,9 +35,11 @@ public class BoardWindow extends JFrame implements ActionListener {
     int[][] navigation;
     boolean[][] flagArray;
     ImageIcon[] mineImg;
-
+    boolean checkLose;
+    int flagCount;
 
     BoardWindow(int mineRow, int mineCol, int mineNum) {
+        flagCount = mineNum;
 
         navigation = new int[][]{{1, 0}, {0, 1}, {-1, 0}, {0, -1}, {1, 1}, {-1, 1}, {1, -1}, {-1, -1}}; // up, right, down, left (clockwise check 8 adjacent squares)
 
@@ -46,17 +49,9 @@ public class BoardWindow extends JFrame implements ActionListener {
             mineImg[i] = new ImageIcon(i + ".png");
         }
 
-//        one = new ImageIcon("1.png");
-//        two = new ImageIcon("2.png");
-//        three = new ImageIcon("3.png");
-//        four = new ImageIcon("4.png");
-//        five = new ImageIcon("5.png");
-//        six = new ImageIcon("6.png");
-//        seven = new ImageIcon("7.png");
-//        eight = new ImageIcon("8.png");
+
         mine = new ImageIcon("Mine.png");
         flag = new ImageIcon("Flag.png");
-//        emptySquare = new ImageIcon("0.png");
         coveredSquare = new ImageIcon("ClickableSquare.png");
 
         mineHeight = 48;
@@ -65,6 +60,8 @@ public class BoardWindow extends JFrame implements ActionListener {
         firstClick = true;
         ROW = mineRow;
         COL = mineCol;
+
+        checkLose = false;
 
         mineFieldArray = new JButton[ROW][COL];
         mineRepresentationArray = new int[ROW][COL];
@@ -130,8 +127,8 @@ public class BoardWindow extends JFrame implements ActionListener {
                     int mineCount = 0;
                     for (int k = 0; k < navigation.length; k++) {
                         try {
-                            if (mineRepresentationArray[i+navigation[k][0]][j+navigation[k][1]] == 2) {
-                                mineCount+=1;
+                            if (mineRepresentationArray[i + navigation[k][0]][j + navigation[k][1]] == 2) {
+                                mineCount += 1;
                             }
                         } catch (Exception e) {
 //                            System.out.println("outside of square, pass");
@@ -146,15 +143,13 @@ public class BoardWindow extends JFrame implements ActionListener {
 
             }
         }
-
-
     }
 
     public boolean checkAdjacentMine(int row, int col) {
         boolean adjacent = false;
         for (int i = 0; i < navigation.length; i++) {
             try {
-                if (mineRepresentationArray[row+navigation[i][0]][col+navigation[i][1]] == 2) {
+                if (mineRepresentationArray[row + navigation[i][0]][col + navigation[i][1]] == 2) {
                     adjacent = true;
                 }
             } catch (Exception e) {
@@ -247,10 +242,10 @@ public class BoardWindow extends JFrame implements ActionListener {
         mineLocations[0][0] = clickRow;
         mineLocations[0][1] = clickCol;
 
-        for (int i = 1; i < navigation.length; i++) { // Generates safe zone around mine
-            if (clickRow+navigation[i][0] < ROW && clickCol+navigation[i][1] < COL)
-            mineLocations[i][0] = clickRow+navigation[i][0];
-            mineLocations[i][1] = clickCol+navigation[i][1];
+        for (int i = 0; i < navigation.length; i++) { // Generates safe zone around mine
+            if (clickRow + navigation[i][0] < ROW && clickCol + navigation[i][1] < COL)
+                mineLocations[i + 1][0] = clickRow + navigation[i][0];
+            mineLocations[i + 1][1] = clickCol + navigation[i][1];
         }
 
         while (mineCount != mineNum + 9) { // +1 since we added 1 to mineCount
@@ -288,12 +283,11 @@ public class BoardWindow extends JFrame implements ActionListener {
      */
     @Override
     public void actionPerformed(ActionEvent e) {
+
         for (int i = 0; i < ROW; i++) {
             for (int j = 0; j < COL; j++) {
-                if (false) {
-
-                } else if (e.getSource() == mineFieldArray[i][j]&& !flagArray[i][j]) {
-                    if (firstClick ) {
+                if (e.getSource() == mineFieldArray[i][j] && !flagArray[i][j]) {
+                    if (firstClick) {
                         firstClick = false;
                         generateBoard(i, j);
                         mineRepresentationArray[i][j] = 1; // Uncover the square
@@ -308,6 +302,8 @@ public class BoardWindow extends JFrame implements ActionListener {
                     } else if (mineRepresentationArray[i][j] == 2) { // If user clicked on a mine
                         showMine();
 
+                        checkLose = true;
+
                     }
                     UpdateBoard();
                     break;
@@ -315,17 +311,20 @@ public class BoardWindow extends JFrame implements ActionListener {
                 }
             }
         }
-        for (int i = 0; i < mineRepresentationArray.length; i++) {
-            for (int j = 0; j < mineRepresentationArray[0].length; j++) {
-                System.out.print(mineRepresentationArray[i][j] + " ");
-            }
-            System.out.println();
-        }
-
 
         if (checkWin()) {
             System.out.println("you win");
+            // Navigate to the win menu here
         }
+        if (checkLose) {
+            System.out.println("You loose");
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException ex) {
+                throw new RuntimeException(ex);
+            }
+        }
+
     }
 
     public boolean checkWin() {
@@ -334,6 +333,7 @@ public class BoardWindow extends JFrame implements ActionListener {
             for (int j = 0; j < mineRepresentationArray[0].length; j++) {
                 if (mineRepresentationArray[i][j] == 0) {
                     win = false;
+                    break;
                 }
             }
         }
