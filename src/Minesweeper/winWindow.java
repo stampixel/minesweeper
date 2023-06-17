@@ -271,7 +271,7 @@ public class winWindow extends Window implements ActionListener {
         if (e.getSource() == usernameButton) {
             username = textField.getText();
             try {
-                PrintWriter out = new PrintWriter(new FileWriter("leaderboard.txt.txt", true));
+                PrintWriter out = new PrintWriter(new FileWriter("leaderboard.txt", true));
                 out.println(username + "|" + min + ":" + sec);
                 out.close();
                 usernameButton.setEnabled(false);

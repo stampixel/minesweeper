@@ -1,6 +1,7 @@
 package Minesweeper;
 
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.concurrent.TimeUnit;
@@ -19,7 +20,10 @@ public class BoardWindow extends JFrame implements ActionListener {
     int mineNum;
     JPanel header;
     JPanel mineField;
-    JPanel footer;
+//    JPanel footer;
+    JButton quit;
+    JLabel flagNumber;
+    JLabel timeDisplay;
     ImageIcon one;
     ImageIcon two;
     ImageIcon three;
@@ -37,6 +41,8 @@ public class BoardWindow extends JFrame implements ActionListener {
     ImageIcon[] mineImg;
     boolean checkLose;
     int flagCount;
+    Timer timer;
+    int time;
 
     BoardWindow(int mineRow, int mineCol, int mineNum) {
         flagCount = mineNum;
@@ -71,7 +77,7 @@ public class BoardWindow extends JFrame implements ActionListener {
         this.mineNum = mineNum;
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setResizable(false);
-        this.setSize(mineRow * mineWidth, mineCol * mineHeight + 80 + 80);
+        this.setSize(mineRow * mineWidth, mineCol * mineHeight + 80);
         this.setVisible(true);
 
         this.setLayout(new BorderLayout(10, 10));
@@ -79,22 +85,81 @@ public class BoardWindow extends JFrame implements ActionListener {
 
         header = new JPanel();
         mineField = new JPanel();
-        footer = new JPanel();
+//        footer = new JPanel();
 
         header.setBackground(Color.black);
-        header.setPreferredSize(new Dimension(WIDTH, 80));
+        header.setPreferredSize(new Dimension(800, 80));
+
+        // Create quit button
+        quit = new JButton("Quit");
+        quit.setFont(new Font("Roboto", Font.PLAIN, 25));
+        quit.setPreferredSize(new Dimension(100, 72));
+        quit.setBorder(new LineBorder(Color.gray, 5, true));
+        quit.setBackground(Color.lightGray);
+        quit.setOpaque(true);
+
+        // Create label that displays number of flags
+        flagNumber = new JLabel("Flags Left: ", SwingConstants.CENTER);
+        flagNumber.setFont(new Font("Roboto", Font.PLAIN, 25));
+        flagNumber.setPreferredSize(new Dimension(100, 72));
+        flagNumber.setBorder(new LineBorder(Color.red, 5, true));
+        flagNumber.setBackground(Color.lightGray);
+        flagNumber.setOpaque(true);
+
+        // Create label that displays time
+        timeDisplay = new JLabel("Time", SwingConstants.CENTER);
+        timeDisplay.setFont(new Font("Roboto", Font.PLAIN, 25));
+        timeDisplay.setPreferredSize(new Dimension(100, 72));
+        timeDisplay.setBorder(new LineBorder(Color.yellow, 5, true));
+        timeDisplay.setBackground(Color.lightGray);
+        timeDisplay.setOpaque(true);
+
+        quit.addActionListener(
+                new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        System.exit(0);
+                    }
+                }
+        );
+
+        header.setLayout(new BorderLayout(5, 5));
+
+        JPanel quitPanel = new JPanel();
+        quitPanel.setLayout(new FlowLayout());
+        quitPanel.add(quit);
+        quitPanel.setBackground(Color.black);
+
+        header.add(flagNumber, BorderLayout.EAST);
+        header.add(quitPanel, BorderLayout.CENTER);
+        header.add(timeDisplay, BorderLayout.WEST);
 
         mineField.setBackground(Color.darkGray);
         mineField.setLayout(new GridLayout(ROW, COL, 3, 3));
 
-        footer.setBackground(Color.gray);
-        footer.setPreferredSize(new Dimension(WIDTH, 80));
+//        footer.setBackground(Color.gray);
+//        footer.setPreferredSize(new Dimension(WIDTH, 80));
 
         this.add(header, BorderLayout.NORTH);
         this.add(mineField, BorderLayout.CENTER);
-        this.add(footer, BorderLayout.SOUTH);
+//        this.add(footer, BorderLayout.SOUTH);
 
         generateMineField(ROW, COL);
+
+
+        timer = new Timer(1000, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                time++;
+                if (time < 100000) {
+                    timeDisplay.setText(Integer.toString(time));
+                } else {
+                    ((Timer) (e.getSource())).stop();
+                }
+            }
+        });
+        timer.setInitialDelay(0);
+        timer.start();
+
 
         this.setVisible(true);
         UpdateBoard();
@@ -119,7 +184,7 @@ public class BoardWindow extends JFrame implements ActionListener {
         for (int i = 0; i < mineRepresentationArray.length; i++) {
             for (int j = 0; j < mineRepresentationArray[0].length; j++) {
 
-                if (mineRepresentationArray[i][j] == 0) {
+                if (mineRepresentationArray[i][j] == 0 || mineRepresentationArray[i][j] == 2) {
 
                     mineFieldArray[i][j].setIcon(coveredSquare);
 
@@ -140,6 +205,8 @@ public class BoardWindow extends JFrame implements ActionListener {
                 if (flagArray[i][j]) {
                     mineFieldArray[i][j].setIcon(flag);
                 }
+
+                flagNumber.setText(String.valueOf(flagCount));
 
             }
         }
@@ -216,8 +283,20 @@ public class BoardWindow extends JFrame implements ActionListener {
                     @Override
                     public void mouseClicked(MouseEvent e) {
                         if (e.getButton() == 3 && mineRepresentationArray[finalI][finalJ] != 1) {
-                            System.out.println("asdfaSDF");
-                            flagArray[finalI][finalJ] = !flagArray[finalI][finalJ]; // Switch
+                            if (flagCount <= 0) {
+                                if (flagArray[finalI][finalJ]) {
+                                    flagArray[finalI][finalJ] = false;
+                                    flagCount++;
+                                    System.out.println("asdasd");
+                                }
+                            } else {
+                                if (flagArray[finalI][finalJ]) {
+                                    flagCount++;
+                                } else {
+                                    flagCount--;
+                                }
+                                flagArray[finalI][finalJ] = !flagArray[finalI][finalJ]; // Switch
+                            }
                             UpdateBoard();
                         }
                     }
@@ -313,14 +392,19 @@ public class BoardWindow extends JFrame implements ActionListener {
         }
 
         if (checkWin()) {
-            System.out.println("you win");
+            try {
+                new winWindow("null", 0, 0);
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
             // Navigate to the win menu here
         }
         if (checkLose) {
-            System.out.println("You loose");
             try {
                 Thread.sleep(2000);
-            } catch (InterruptedException ex) {
+                new loseWindow(0, 0);
+                dispose();
+            } catch (Exception ex) {
                 throw new RuntimeException(ex);
             }
         }
@@ -339,5 +423,4 @@ public class BoardWindow extends JFrame implements ActionListener {
         }
         return win;
     }
-
 }
