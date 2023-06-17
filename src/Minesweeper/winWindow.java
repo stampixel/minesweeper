@@ -270,7 +270,7 @@ public class winWindow extends Window implements ActionListener {
             username = textField.getText();
             try {
                 PrintWriter out = new PrintWriter(new FileWriter("leaderboard.txt", true));
-                out.println(username + "|" + min + ":" + sec);
+                out.println(username + "-" + sec+ "-");
                 out.close();
                 usernameButton.setEnabled(false);
             } catch (IOException e1) {
@@ -281,6 +281,7 @@ public class winWindow extends Window implements ActionListener {
             new MainMenu();
         } else if (e.getSource() == quit) {
             this.dispose();
+            System.exit(0);
         }
     }
 

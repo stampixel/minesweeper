@@ -215,6 +215,7 @@ public class loseWindow extends Window implements ActionListener {
         //when quit button is pressed close window
         if (e.getSource() == quit) {
             dispose();
+            System.exit(0);
         } else if (e.getSource() == mainMenu) {
             //when main menu button is clicked
             //will restart game

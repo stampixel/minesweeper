@@ -253,10 +253,10 @@ public class DifficultySelection extends Window{
         while (quit == false) {
             if (height <= 5) {
                 JOptionPane.showMessageDialog(this, "The value is too small! Try again.");
-                width = Integer.parseInt(JOptionPane.showInputDialog(null, "Enter the board height (6-24):"));
+                height = Integer.parseInt(JOptionPane.showInputDialog(null, "Enter the board height (6-24):"));
             } else if (height > 24) {
                 JOptionPane.showMessageDialog(this, "The value is too big! Try again.");
-                width = Integer.parseInt(JOptionPane.showInputDialog(null, "Enter the board height (6-24):"));
+                height = Integer.parseInt(JOptionPane.showInputDialog(null, "Enter the board height (6-24):"));
             } else {
                 quit = true;
             }
@@ -265,15 +265,16 @@ public class DifficultySelection extends Window{
         quit = false;
         bombs = Integer.parseInt(JOptionPane.showInputDialog(null, "Enter the amount of bombs (5-99):"));
         while (quit == false) {
-            if (width <= 4) {
+            if (bombs <= 4) {
                 JOptionPane.showMessageDialog(this, "The value is too small! Try again.");
-                width = Integer.parseInt(JOptionPane.showInputDialog(null, "Enter the amount of bombs (5-99):"));
-            } else if (width > 99) {
+                bombs = Integer.parseInt(JOptionPane.showInputDialog(null, "Enter the amount of bombs (5-99):"));
+            } else if (bombs > 99) {
                 JOptionPane.showMessageDialog(this, "The value is too big! Try again.");
-                width = Integer.parseInt(JOptionPane.showInputDialog(null, "Enter the amount of bombs(5-99):"));
+                bombs = Integer.parseInt(JOptionPane.showInputDialog(null, "Enter the amount of bombs(5-99):"));
             } else {
                 quit = true;
             }
         }
     }
+
 }

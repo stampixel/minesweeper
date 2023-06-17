@@ -78,7 +78,7 @@ public class BoardWindow extends JFrame implements ActionListener {
         this.mineNum = mineNum;
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setResizable(false);
-        this.setSize(mineRow * mineWidth, mineCol * mineHeight + 80);
+        this.setSize(COL * mineWidth, ROW * mineHeight + 80);
         this.setVisible(true);
 
         this.setLayout(new BorderLayout(10, 10));
@@ -167,7 +167,7 @@ public class BoardWindow extends JFrame implements ActionListener {
     }
 
     public static void main(String[] args) {
-        new BoardWindow(8, 8, 10);
+        new BoardWindow(16, 8, 10);
     }
 
     /**
