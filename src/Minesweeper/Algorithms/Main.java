@@ -5,9 +5,12 @@ import java.awt.Dimension;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-//from ww  w  . j  a  va  2 s .  c o m
 import javax.swing.*;
 
+/**
+ * @author Kevin Tang
+ * THIS FILE WAS USED ONLY TO TEST ALGORITHMS
+ */
 public class Main {
 
     public static void main(String[] args) {

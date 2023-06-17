@@ -1,5 +1,9 @@
 package Minesweeper.Algorithms;
 
+/**
+ * @author Kevin Tang
+ * THIS FILE WAS USED ONLY TO TEST ALGORITHMS
+ */
 public class MineAlgorithm {
 
     public static void main(String[] args) {

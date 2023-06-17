@@ -1,33 +1,35 @@
 package Minesweeper;
 
+/**
+ * @author kevin.tang
+ * 2023.06.07
+ */
+
 import javax.swing.*;
-import java.awt.*;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.Scanner;
 
 public abstract class Window extends JFrame {
-    String font;
-    int smallFont;
-    int mediumFont;
-    int largeFont;
-    int titleFont;
+    /**
+     * ALL ATTRIBUTES MUST BE PUBLIC, OTHERWISE THEY WILL BE INACCESSIBLE TO SUBCLASSES
+     */
     int leaderboardLength;
     int[] leaderboardScores;
     String[] leaderboardUsernames;
 
+    /**
+     * THIS IS AN ABSTRACT CLASS
+     *
+     * Extend this class when you're creating a new window
+     * The constructor houses everything that is are used in multiple subclasses, as well as the very base of each and every window/JFrame
+     * @throws Exception
+     */
     Window() throws Exception {
-
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setResizable(false);
         this.setSize(1280, 720);
-
-        font = "Roboto";
-        smallFont = 15;
-        mediumFont = 20;
-        largeFont = 30;
-        titleFont = 50;
 
         leaderboardLength = getFileLength() + 2;
         leaderboardScores = new int[leaderboardLength];
@@ -35,6 +37,11 @@ public abstract class Window extends JFrame {
     }
 
 
+    /**
+     * Returns the number of lines inside the leaderboard.txt file
+     * @return
+     * @throws Exception
+     */
     public static int getFileLength() throws Exception {
         // initializes file object
         File file = new File("leaderboard.txt");
@@ -53,6 +60,14 @@ public abstract class Window extends JFrame {
         return counter;
     }
 
+    /**
+     * This is called if the user wants to submit their score to the leaderboard
+     * @param leaderboardScores
+     * @param leaderboardUsernames
+     * @param userTotalScore
+     * @param username
+     * @throws Exception
+     */
     public static void addToLeaderboard(int[] leaderboardScores, String[] leaderboardUsernames, int userTotalScore, String username) throws Exception {
         // Declares and initializes new file object to "Leaderboard.txt"
         File file = new File("leaderboard.txt");
@@ -81,12 +96,13 @@ public abstract class Window extends JFrame {
         } catch (Exception e) {
             System.out.println("Creating leaderboard...\nCheck back in next time in the welcome screen to see updated rankings!");
         }
-// Calls getFileLength method and sets the current user score and username to the last index of the array, or index of the length of the file
+        // Calls getFileLength method and sets the current user score and username to the last index of the array, or index of the length of the file
         int fileLength = getFileLength();
         leaderboardScores[fileLength] = userTotalScore;
         leaderboardUsernames[fileLength] = username;
 
-        // Bubblesorts all scores and usernames in the leaderboard file in descending order
+        // Bubble sorts all scores and usernames in the leaderboard file in ascending order each time a new username is added
+        // (speed isn't an issue, leaderboard won't contain a lot of entry's)
         for (int i = 0; i < leaderboardScores.length - 1; i++) {
             for (int j = 0; j < leaderboardScores.length - i - 1; j++) {
                 if (leaderboardScores[j] > leaderboardScores[j + 1]) {
@@ -100,19 +116,19 @@ public abstract class Window extends JFrame {
             }
         }
 
-        // Clears leaderboard file
+        // Saves leaderboard file
         pw.close();
 
 
         pw = new PrintWriter(new FileWriter(file));
 
-        // Prints all scores in descending order to the leaderboard file
+        // Prints all scores in ascending order to the leaderboard file
         for (int i = 0; i < leaderboardScores.length; i++) {
             System.out.println();
             if (leaderboardUsernames[i] != null && leaderboardScores[i] != 0) {
                 pw.println(leaderboardUsernames[i] + "-" + leaderboardScores[i] + "-");
             }
         }
-        pw.close();
+        pw.close(); // Saves leaderboard
     }
 }
